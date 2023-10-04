@@ -1,24 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import { Route, Routes } from "react-router-dom";
+import "./App.css";
+import LoginPage from "./Screens/LoginPage";
+import Orders from "./Screens/Orders";
+import Stock from "./Screens/Stock";
+import Pizza from "./Screens/Pizza";
+import CompletedOrders from "./Screens/CompletedOrders";
+import AddPizza from "./Screens/AddPizza";
+import EditPizza from "./Screens/EditPizza";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/orders" element={<Orders />} />
+        <Route path="/stock" element={<Stock />} />
+        <Route path="/pizza" element={<Pizza />} />
+        <Route path="/completedorders" element={<CompletedOrders/>}/>
+        <Route path="/addpizza" element={<AddPizza/>}/>
+        <Route path="/editpizza/:id" element={<EditPizza/>}/>
+      </Routes>
+    </>
   );
 }
 
