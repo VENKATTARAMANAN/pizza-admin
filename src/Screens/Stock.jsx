@@ -17,15 +17,13 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { useFormik } from "formik";
-import { AddIcon, MinusIcon } from "@chakra-ui/icons";
-
+import { url } from "../config/api";
 const Stock = () => {
   const [pizzadata, setPizzadata] = useState([]);
   const toast = useToast();
   const getData = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/pizza/all", {
+      const response = await axios.get(`${url}/pizza/all`, {
         headers: {
           Authorization: localStorage.getItem("AuthTokenAdmin"),
         },
@@ -40,11 +38,12 @@ const Stock = () => {
   const addQty = async (id) => {
     try {
       const { data } = await axios.put(
-        "http://localhost:9000/admin/updatestock",
-        { _id: id },{
-          headers:{
-            Authorization:localStorage.getItem("AuthTokenAdmin")
-          }
+        `${url}/admin/updatestock`,
+        { _id: id },
+        {
+          headers: {
+            Authorization: localStorage.getItem("AuthTokenAdmin"),
+          },
         }
       );
       getData();
@@ -96,66 +95,78 @@ const Stock = () => {
               mt={3}
               p={5}
               height={"500px"}
-              width={{sm:"250",md:"350px", lg:"350px"}}
+              width={{ sm: "300", md: "350px", lg: "350px" }}
             >
               <Box
-              display={"flex"}
-              justifyContent={"center"}
-              alignItems={"center"}
-              mt={5}
-            >
-              <Image
-                objectFit="cover"
-                maxW={{ base: "100%", sm: "200px" }}
-                src={val.image}
-                alt="Caffe Latte"
-                width={"200px"}
-                height={"200px"}
-              />
+                display={"flex"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                mt={5}
+              >
+                <Image
+                  objectFit="cover"
+                  maxW={{ base: "100%", sm: "200px" }}
+                  src={val.image}
+                  alt="Caffe Latte"
+                  width={"200px"}
+                  height={"200px"}
+                />
               </Box>
               <Stack>
-                <Box mt={5}>
-                  <Heading size="md">{val.name}</Heading>
-                  <Box fontSize={13}  width={{base:"150"}}><Text py="2">{val.description}</Text></Box>
-                </Box>
-                
-                  <Box
-                    display={"flex"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                  >
-                    <VStack spacing={3}>
-                      <Box>
-                      <HStack spacing={3}>
-                      <Heading fontSize={17}>Stock</Heading>
-                      {val.stock >= 20 ? (
-                        <Button variant="solid" colorScheme="green">
-                          {val.stock}
-                        </Button>
-                      ) : (
-                        <Button variant="solid" colorScheme="red">
-                          {val.stock}
-                        </Button>
-                      )}
-                      </HStack>
-                      </Box>
-                      <Box>
-                        <HStack spacing={3}>
-                          <Text fontWeight={"bold"} fontSize={17}>
-                            UpdateStock
-                          </Text>
-                          <Button
-                            variant="solid"
-                            colorScheme="blue"
-                            onClick={() => addQty(val._id)}
-                          >
-                            Add Qty
-                          </Button>
-                        </HStack>
-                      </Box>
-                    </VStack>
+                <Box mt={5} width="350px" >
+                  <Box>
+                    <Heading width="150px" height="35px" fontSize="15px">
+                      {val.name}
+                    </Heading>
                   </Box>
-               
+                  <Box
+                    fontSize={13}
+                    style={{
+                      overflow: "hidden",
+                     height:"45px",
+                     width:"250px",
+                     textOverflow:"ellipsis"
+                    }}
+                  >
+                    <Text py="2">{val.description}</Text>
+                  </Box>
+                </Box>
+                <Box
+                  display={"flex"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                >
+                  <VStack spacing={3}>
+                    <Box>
+                      <HStack spacing={3}>
+                        <Heading fontSize={17}>Stock</Heading>
+                        {val.stock >= 20 ? (
+                          <Button variant="solid" colorScheme="green">
+                            {val.stock}
+                          </Button>
+                        ) : (
+                          <Button variant="solid" colorScheme="red">
+                            {val.stock}
+                          </Button>
+                        )}
+                      </HStack>
+                    </Box>
+                    <Box>
+                      <HStack spacing={3}>
+                        <Text fontWeight={"bold"} fontSize={17}>
+                          UpdateStock
+                        </Text>
+                        <Button
+                          variant="solid"
+                          colorScheme="blue"
+                          onClick={() => addQty(val._id)}
+                        >
+                          Add Qty
+                        </Button>
+                      </HStack>
+                    </Box>
+                  </VStack>
+                </Box>
               </Stack>
             </Card>
           ))}

@@ -25,6 +25,7 @@ import {
 import axios from "axios";
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
+import { url } from "../config/api";
 
 const Pizza = () => {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ const Pizza = () => {
   const toast = useToast();
   const getData = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/pizza/all", {
+      const response = await axios.get(`${url}/pizza/all`, {
         headers: {
           Authorization: localStorage.getItem("AuthTokenAdmin"),
         },
@@ -51,7 +52,7 @@ const Pizza = () => {
     console.log(deleteid);
     try {
       const { data } = await axios.delete(
-        `http://localhost:9000/admin/deletepizza/${deleteid}`,
+        `${url}/admin/deletepizza/${deleteid}`,
         {
           headers: {
             Authorization: localStorage.getItem("AuthTokenAdmin"),

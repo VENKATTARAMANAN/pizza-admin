@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from './Navbar'
 import axios from "axios";
+import { url } from "../config/api";
 import {
   Accordion,
   AccordionButton,
@@ -35,15 +36,15 @@ const CompletedOrders = () => {
   const [onlinepaid, setOnlinePaid] = useState([]);
   const getOrders = async () => {
     try {
-      const { data } = await axios.get("http://localhost:9000/admin/getorders",{
+      const { data } = await axios.get(`${url}/admin/getorders`,{
         headers:{
           Authorization:localStorage.getItem("AuthTokenAdmin")
         }
       });
       console.log(data.data);
       if (data.data.statuscode === 200) {
-        setCod(data.data.cod);
-        setOnlinePaid(data.data.online);
+        setCod(data.data.cod.reverse());
+        setOnlinePaid(data.data.online.reverse());
       } else if (data.statuscode === 204) {
         console.log("no data found");
       }

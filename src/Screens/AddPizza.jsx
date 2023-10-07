@@ -19,13 +19,14 @@ import axios from "axios";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
+import { url } from "../config/api";
 
 const addPizzaValidation = yup.object({
   name: yup
     .string()
     .required("Please Enter Name")
     .min(5, "Please Enter min 5 Characters")
-    .max(50, "Maximum 50 Character Allowed"),
+    .max(25, "Maximum 25 Character Allowed"),
   description: yup
     .string()
     .required("Please Enter Description")
@@ -35,7 +36,7 @@ const addPizzaValidation = yup.object({
     .number()
     .required("Please Enter Stock")
     .min(1, "Please Enter minimum 1 stock")
-    .max(100000, "Maximum 1,00,000 Stock Allowed"),
+    .max(100000, "Maximum 1,00,000 Stock Allowed").positive().integer(),
 });
 
 const AddPizza = () => {
@@ -47,10 +48,7 @@ const AddPizza = () => {
   const [medium, setMedium] = useState("");
   const [checkedThree, setCheckedThree] = useState(false);
   const [large, setLarge] = useState("");
-  const [names, setName] = useState(" ");
   const [image, setImage] = useState(" ");
-  const [description, setDescription] = useState(" ");
-  const [stock, setStock] = useState("");
   const [imageerror,setImageError]=useState("");
 
   const { values, errors, handleSubmit, handleChange, touched, handleBlur } =
@@ -129,11 +127,9 @@ const AddPizza = () => {
                   duration: 3500,
                   isClosable: true,
                 })
-             
-          }
-          
+          }  
           else{
-            const {data,status}=await axios.post("http://localhost:9000/admin/addnewpizza",value,
+            const {data,status}=await axios.post(`${url}/admin/addnewpizza`,value,
       {
         headers:{
           Authorization:localStorage.getItem("AuthTokenAdmin")

@@ -15,6 +15,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { Button } from "@chakra-ui/react";
+import { url } from "../config/api";
 import {
   Step,
   StepDescription,
@@ -43,14 +44,14 @@ const Orders = () => {
   console.log(cod,onlinepaid);
   const getOrders = async () => {
     try {
-      const { data } = await axios.get("http://localhost:9000/admin/getorders",{
+      const { data } = await axios.get(`${url}/admin/getorders`,{
         headers:{
           Authorization:localStorage.getItem("AuthTokenAdmin")
         }
       });
       if (data.data.statuscode === 200) {
-        setCod(data.data.cod);
-        setOnlinePaid(data.data.online);
+        setCod(data.data.cod.reverse());
+        setOnlinePaid(data.data.online.reverse());
       } else if (data.statuscode === 204) {
         console.log("no data found");
       }
@@ -62,7 +63,7 @@ const Orders = () => {
   const changeOrderStatus = async (val, orderType) => {
     try {
       const { data } = await axios.post(
-        "http://localhost:9000/admin/updataorderstatus",
+        `${url}/admin/updataorderstatus`,
         { id: val, orderType },{
           headers:{
             Authorization:localStorage.getItem("AuthTokenAdmin")

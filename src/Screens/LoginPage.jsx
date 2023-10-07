@@ -15,18 +15,19 @@ import {
 import { useFormik } from "formik";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { url } from "../config/api";
 
 const LoginPage = () => {
   const navigate=useNavigate();
   const { values, handleSubmit, handleChange, handleBlur } = useFormik({
     initialValues: {
-      email: "",
-      password: "",
+      email: "admin@gmail.com",
+      password: "123456789",
     },
     onSubmit: async (values) => {
       try {
         const { data } = await axios.post(
-          "http://localhost:9000/admin/adminlogin",
+          `${url}/admin/adminlogin`,
           values
         );
         if(data.data.statuscode === 200){
@@ -52,8 +53,7 @@ const LoginPage = () => {
         py={{ base: "0", sm: "8" }}
         px={{ base: "0", sm: "10" }}
         borderRadius={{ base: "none", sm: "xl" }}
-        maxW="lg"
-        width={{ base: "100%", sm: "75%", md: "100%" }}
+        padding="20px"
       >
         <Center>
           <Image

@@ -15,6 +15,21 @@ import {
 import { useFormik } from "formik";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import * as yup from "yup";
+import { url } from "../config/api";
+
+const addPizzaValidation = yup.object({
+  name: yup
+    .string()
+    .required("Please Enter Name")
+    .min(5, "Please Enter min 5 Characters")
+    .max(30, "Maximum 25 Character Allowed"),
+  description: yup
+    .string()
+    .required("Please Enter Description")
+    .min(10, "Minimum 10 characters required")
+    .max(200, "Maximum 200 Character Allowed"),
+});
 
 const EditPizza = () => {
   const navigate = useNavigate();
@@ -24,14 +39,16 @@ const EditPizza = () => {
   const [regular, setRegular] = useState("");
   const [medium, setMedium] = useState("");
   const [large, setLarge] = useState("");
+  const [imageerror, setImageError] = useState("");
 
   const getData = async () => {
     try {
       const { data } = await axios.get(
-        `http://localhost:9000/admin/editpizza/${id}`,{
-          headers:{
-            Authorization:localStorage.getItem("AuthTokenAdmin")
-          }
+        `${url}/admin/editpizza/${id}`,
+        {
+          headers: {
+            Authorization: localStorage.getItem("AuthTokenAdmin"),
+          },
         }
       );
       setValues(data.data.dat);
@@ -40,7 +57,7 @@ const EditPizza = () => {
     }
   };
 
-  const { values, handleSubmit, handleChange, setValues } = useFormik({
+  const { values,errors,touched, handleSubmit, handleChange, setValues,handleBlur } = useFormik({
     initialValues: {
       name: "",
       image: "",
@@ -50,32 +67,49 @@ const EditPizza = () => {
       medium: "",
       large: "",
     },
+    validationSchema: addPizzaValidation,
     onSubmit: async () => {
-      if (image !== "") {
-        values.image = image;
-      }
-      values.prices = [{
-        regular:parseInt(regular),
-        medium:parseInt(medium),
-        large:+large
-      }];
-      delete(values._id);
-      delete(values._id,values.regular,values.medium,values.large);
       try {
-        const { data, status } = await axios.put("http://localhost:9000/admin/editpizzadata",values,{
-          headers:{
-            Authorization:localStorage.getItem("AuthTokenAdmin")
-          }
-        });
-        if (status === 200) {
+        if (imageerror === "Invalid file format") {
           toast({
-            title: data.data,
-            status: "success",
+            title: "Please select JPEG or PNG file format",
+            status: "error",
             position: "top-right",
             duration: 3500,
             isClosable: true,
           });
-          navigate("/pizza");
+        } else {
+          if (image !== "") {
+            values.image = image;
+          }
+          values.prices = [
+            {
+              regular: parseInt(regular),
+              medium: parseInt(medium),
+              large: +large,
+            },
+          ];
+          delete values._id;
+          delete (values._id, values.regular, values.medium, values.large);
+          const { data, status } = await axios.put(
+            `${url}/admin/editpizzadata`,
+            values,
+            {
+              headers: {
+                Authorization: localStorage.getItem("AuthTokenAdmin"),
+              },
+            }
+          );
+          if (status === 200) {
+            toast({
+              title: data.data,
+              status: "success",
+              position: "top-right",
+              duration: 3500,
+              isClosable: true,
+            });
+            navigate("/pizza");
+          }
         }
       } catch (error) {
         console.log(error);
@@ -88,13 +122,12 @@ const EditPizza = () => {
         });
       }
     },
-
   });
   useEffect(() => {
     if (values.prices) {
       values.prices.map((val) => {
-       setRegular(val.regular);
-       setMedium(val.medium);
+        setRegular(val.regular);
+        setMedium(val.medium);
         setLarge(val.large);
       });
     }
@@ -115,9 +148,11 @@ const EditPizza = () => {
           .then((response) => {
             data = response.data["secure_url"];
             setImage(data);
+            setImageError("");
           });
         return data;
       } else {
+        setImageError("Invalid file format");
         toast({
           title: "Invalid file format",
           status: "error",
@@ -159,7 +194,13 @@ const EditPizza = () => {
                   value={values.name}
                   id="name"
                   onChange={handleChange}
+                  onBlur={handleBlur}
                 />
+                {errors.name && touched.name ? (
+                  <span className="errrorText">{errors.name}</span>
+                ) : (
+                  <></>
+                )}
                 <FormLabel>Image</FormLabel>
                 <Input
                   placeholder="Image"
@@ -175,13 +216,20 @@ const EditPizza = () => {
                   id="description"
                   onChange={handleChange}
                   value={values.description}
+                  onBlur={handleBlur}
                 />
+                {errors.description && touched.description ? (
+                  <span className="errrorText">{errors.description}</span>
+                ) : (
+                  <></>
+                )}
                 <FormLabel>Price</FormLabel>
                 <FormLabel>Regular</FormLabel>
                 <Input
                   id="regular"
                   name="regular"
                   value={regular}
+                  type="number"
                   onChange={(e) => setRegular(e.target.value)}
                 />
                 <FormLabel>Medium</FormLabel>
@@ -189,12 +237,14 @@ const EditPizza = () => {
                   id="medium"
                   name="medium"
                   value={medium}
+                  type="number"
                   onChange={(e) => setMedium(e.target.value)}
                 />
                 <FormLabel>Large</FormLabel>
                 <Input
                   id="large"
                   name="large"
+                  type="number"
                   value={large}
                   onChange={(e) => setLarge(e.target.value)}
                 />
