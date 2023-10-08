@@ -40,8 +40,6 @@ const Orders = () => {
   const toast=useToast();
   const [cod, setCod] = useState([]);
   const [onlinepaid, setOnlinePaid] = useState([]);
-
-  console.log(cod,onlinepaid);
   const getOrders = async () => {
     try {
       const { data } = await axios.get(`${url}/admin/getorders`,{
@@ -148,7 +146,8 @@ const Orders = () => {
                             bg={"white"}
                             fontFamily={"'Roboto Slab', serif"}
                             mt={3}
-                            display={"flex"}
+                            display={{base:"flex"}}
+                            flexDirection={{base:"column",sm:"column",md:"row",lg:"row"}}
                             gap={10}
                           >
                             <Box>
@@ -234,7 +233,7 @@ const Orders = () => {
                         >
                           <h2>Order Details</h2>
                         </Box>
-                        <Box mt={2} gap={6} display={"flex"}>
+                        <Box mt={2} gap={6} display={"flex"} flexDirection={{base:"column",sm:"column",md:"row",lg:"row"}}>
                           <Box>
                             <Text
                               textDecoration={"underline"}
@@ -264,7 +263,7 @@ const Orders = () => {
                             </Text>
                             <Text>{val.paymentstatus}</Text>
                           </Box>
-                          <Box>
+                          <Box  >
                             <Text
                               textDecoration={"underline"}
                               fontWeight={"bold"}
