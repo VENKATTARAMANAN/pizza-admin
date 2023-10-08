@@ -336,6 +336,7 @@ const Orders = () => {
                               fontFamily={"'Roboto Slab', serif"}
                               display={"flex"}
                               gap={5}
+                              flexDirection={{base:"column",sm:"column",md:"row",lg:"row"}}
                             >
                               <Box>
                                 <Image
@@ -402,7 +403,7 @@ const Orders = () => {
                             </Stepper>
                           </Box>
                           <Box
-                            mt={6}
+                            mt={[9, 6, 6, 8]}
                             display={"flex"}
                             justifyContent={"center"}
                           >
@@ -421,7 +422,7 @@ const Orders = () => {
                         >
                           <h2>Order Details</h2>
                         </Box>
-                        <Box mt={2} gap={6} display={"flex"}>
+                        <Box mt={2} gap={6} display={"flex"} flexDirection={{base:"column",sm:"column",md:"row",lg:"row"}}>
                           <Box>
                             <Text
                               textDecoration={"underline"}
