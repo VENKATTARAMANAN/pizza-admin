@@ -36,28 +36,33 @@ const EditPizza = () => {
   const { id } = useParams();
   const toast = useToast();
   const [image, setImage] = useState("");
-  const [regular, setRegular] = useState("");
-  const [medium, setMedium] = useState("");
-  const [large, setLarge] = useState("");
+  const [regular, setRegular] = useState(0);
+  const [medium, setMedium] = useState(0);
+  const [large, setLarge] = useState(0);
   const [imageerror, setImageError] = useState("");
 
   const getData = async () => {
     try {
-      const { data } = await axios.get(
-        `${url}/admin/editpizza/${id}`,
-        {
-          headers: {
-            Authorization: localStorage.getItem("AuthTokenAdmin"),
-          },
-        }
-      );
+      const { data } = await axios.get(`${url}/admin/editpizza/${id}`, {
+        headers: {
+          Authorization: localStorage.getItem("AuthTokenAdmin"),
+        },
+      });
       setValues(data.data.dat);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const { values,errors,touched, handleSubmit, handleChange, setValues,handleBlur } = useFormik({
+  const {
+    values,
+    errors,
+    touched,
+    handleSubmit,
+    handleChange,
+    setValues,
+    handleBlur,
+  } = useFormik({
     initialValues: {
       name: "",
       image: "",
@@ -82,18 +87,49 @@ const EditPizza = () => {
           if (image !== "") {
             values.image = image;
           }
+         if((regular !== 0)&&(medium !== 0)&&(large !== 0)){
           values.prices = [
             {
-              regular: parseInt(regular),
-              medium: parseInt(medium),
+              regular: +regular,
+              medium: +medium,
               large: +large,
             },
           ];
+          values.varients=["regular","medium","large"]
+         }else if((medium === 0)&&(large === 0)){
+          values.prices = [
+            {
+              regular: +regular,
+              medium:" ",
+              large:" ",
+            },
+          ];
+         }else if((medium !== 0)&&(large === 0)){
+          values.prices = [
+            {
+              regular: +regular,
+              medium:+medium,
+              large:" ",
+            },
+          ];
+          values.varients=["regular","medium"]
+         }else if((medium === 0)&&(large !== 0)){
+          values.prices = [
+            {
+              regular: +regular,
+              medium:" ",
+              large:+large,
+            },
+          ];
+          values.varients=["regular","large"]
+         }
+        const pizzaid=values._id;
           delete values._id;
           delete (values._id, values.regular, values.medium, values.large);
+          console.log(values);
           const { data, status } = await axios.put(
             `${url}/admin/editpizzadata`,
-            values,
+            [values,pizzaid],
             {
               headers: {
                 Authorization: localStorage.getItem("AuthTokenAdmin"),
@@ -231,7 +267,11 @@ const EditPizza = () => {
                   value={regular}
                   type="number"
                   onChange={(e) => setRegular(e.target.value)}
+                  onBlur={handleBlur}
+                  max="100000"
+                  min="1"
                 />
+              
                 <FormLabel>Medium</FormLabel>
                 <Input
                   id="medium"
@@ -239,6 +279,8 @@ const EditPizza = () => {
                   value={medium}
                   type="number"
                   onChange={(e) => setMedium(e.target.value)}
+                  max="100000"
+                  min="0"
                 />
                 <FormLabel>Large</FormLabel>
                 <Input
@@ -247,6 +289,8 @@ const EditPizza = () => {
                   type="number"
                   value={large}
                   onChange={(e) => setLarge(e.target.value)}
+                  max="100000"
+                  min="0"
                 />
               </FormControl>
               <Box mt={5} display={"flex"} justifyContent={"center"}>

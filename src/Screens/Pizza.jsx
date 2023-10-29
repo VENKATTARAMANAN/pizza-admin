@@ -49,7 +49,6 @@ const Pizza = () => {
   };
 
   const deletePizza = async () => {
-    console.log(deleteid);
     try {
       const { data } = await axios.delete(
         `${url}/admin/deletepizza/${deleteid}`,

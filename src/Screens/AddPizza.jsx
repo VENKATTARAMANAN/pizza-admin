@@ -26,7 +26,7 @@ const addPizzaValidation = yup.object({
     .string()
     .required("Please Enter Name")
     .min(5, "Please Enter min 5 Characters")
-    .max(25, "Maximum 25 Character Allowed"),
+    .max(35, "Maximum 35 Character Allowed"),
   description: yup
     .string()
     .required("Please Enter Description")
@@ -303,6 +303,8 @@ const AddPizza = () => {
                         placeholder="Price"
                         required
                         type="number"
+                        max="100000"
+                        min="1"
                       />
                     ) : (
                       <></>
@@ -311,7 +313,7 @@ const AddPizza = () => {
                 </Box>
                 <Box>
                   <HStack spacing={3}>
-                    <Checkbox value={checkedTwo} onChange={handleChangeTwo}>
+                    <Checkbox  required value={checkedTwo} onChange={handleChangeTwo}>
                       Medium
                     </Checkbox>
                     {checkedTwo ? (
@@ -321,6 +323,8 @@ const AddPizza = () => {
                         placeholder="Price"
                         required
                         type="number"
+                        max="100000"
+                        min="1"
                       />
                     ) : (
                       <></>
@@ -329,7 +333,7 @@ const AddPizza = () => {
                 </Box>
                 <Box>
                   <HStack spacing={3}>
-                    <Checkbox value={checkedThree} onChange={handleChangeThree}>
+                    <Checkbox required value={checkedThree} onChange={handleChangeThree}>
                       Large
                     </Checkbox>
                     {checkedThree ? (
@@ -339,6 +343,8 @@ const AddPizza = () => {
                         placeholder="Price"
                         required
                         type="number"
+                        max="100000"
+                        min="1"
                       />
                     ) : (
                       <></>
